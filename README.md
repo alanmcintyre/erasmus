@@ -8,7 +8,7 @@ Usage: Add this directory to PYTHONPATH (or cd here) and run erasmus.py
 
 Example output:
 
-![Example path over 2D Perlin Noise image](https://raw.github.com/alanmcintyre/erasmus/master/PerlinNoise2d.png)
+![Example path over 2D Perlin Noise image](https://raw.github.com/alanmcintyre/erasmus/master/sample_output.png)
 
     Generation 000/100: 0002654.073 (5.4 sec)
     Generation 001/100: 0000832.138 (6.6 sec)
