@@ -1,10 +1,37 @@
-from math import sin, cos
+from math import sin, cos, pi, exp
 import numpy as np
 import Image
 import ImageDraw
 
-from getX import getX
-from h_ax import h_ax
+def getDDvf(im, x, y, theta, epsilon):
+    '''Approximate (w/ epsilon) the directional derivative of f at (x,y)
+    along a vector defined by theta.'''
+    x2 = x + epsilon*cos(theta)
+    y2 = y + epsilon*sin(theta)
+
+    x = max(x,0)
+    y = max(y,0)
+
+    x2 = max(x2, 0)
+    y2 = max(y2, 0)
+
+    x2 = min(x2, im.shape[1]-1)
+    y2 = min(y2, im.shape[0]-1)
+
+    x2 = round(x2)
+    y2 = round(y2)
+
+    p1 = im[y, x]
+    p2 = im[y2, x2]
+    return (p2-p1)/epsilon
+
+def getX(im, x, y, thetas, epsilon):
+    '''Get gradient for n evenly-spaced radial directions around [x,y]'''
+    return [getDDvf(im, x, y, theta, epsilon) for theta in thetas]
+
+def h_ax(alpha, x):
+    '''h_alpha(x) = 2*pi(sigmoid(x)-0.5)'''
+    return 2*pi*(1.0 / (1+exp(np.dot(alpha, x))) - 0.5)
 
 class Agent:
     def __init__(self, alpha):

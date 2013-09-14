@@ -14,8 +14,7 @@ epsilon = 4
 lam = 0.001
 maxN = 500
 
-p1 = 30
-p2 = 267
+p1, p2 = 30, 267
 
 P = 50 # population size
 P_new = .1 # fraction of population to be entirely new each generation
@@ -34,7 +33,6 @@ for generation in range(gens):
     costs = []
     for agent in agents:
         cost = agent.score(imdata, p1, p2, epsilon, lam, n, maxN, Q)
-        #print cost, agent.finished
         costs.append((cost, agent))
         
     costs.sort()
@@ -59,19 +57,20 @@ for generation in range(gens):
         if random.randint(0, 1):
             parent1 = best_agent    
         else:
-            parent1 = random.choice(agents)
+            unused, parent1 = random.choice(costs[:20])
         
-        parent2 = random.choice(agents)
+        unused, parent2 = random.choice(costs[:20])
+
         # Crossover
         pivot = random.randint(1, n-2)
         alpha = parent1.alpha.tolist()[:pivot] + parent2.alpha.tolist()[pivot:]
         alpha = np.array(alpha)
+
         # Mutate
         alpha += 0.1*np.random.randn(*alpha.shape)
         new_agents.append(Agent(alpha))
         
     agents = new_agents
 
-    #print 'Generation %03d/%03d: %011.3f (finished: %d %2.3f)' % (generation, gens, best_cost, best_f, f_rat)
     dt = time.time() - t0
     print 'Generation %03d/%03d: %011.3f (%.1f sec)' % (generation, gens, best_cost, dt)
