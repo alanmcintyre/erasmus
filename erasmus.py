@@ -1,10 +1,17 @@
+import glob
+import os
 import random
 import time
 
 import numpy as np
+import matplotlib.pyplot as plt
 import Image
 
 from agent import Agent
+
+# Remove any old plots
+for f in glob.glob("gen-*.png"):
+    os.unlink(f)
 
 im = Image.open('PerlinNoise2d.png')
 imdata = np.mean(np.array(im), axis=2)
@@ -27,7 +34,7 @@ Q = 3000000
 # Initial population
 agents = [Agent(np.random.standard_t(2, n)) for i in range(P)]
 
-mc = np.zeros((gens, 1))
+best_scores = []
 best = np.inf
 for generation in range(gens):
     t0 = time.time()
@@ -78,3 +85,11 @@ for generation in range(gens):
     dt = time.time() - t0
     print 'Generation %03d/%03d: %011.3f (%.1f sec)' % (generation, gens,
                                                         best_cost, dt)
+    best_scores.append(best_cost)
+
+fig = plt.figure()
+ax = fig.add_subplot(1, 1, 1)
+ax.plot(best_scores)
+ax.set_yscale("log")
+fig.savefig("error-plot.png")
+
