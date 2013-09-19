@@ -39,19 +39,23 @@ def h_ax(alpha, x):
 class Agent:
     def __init__(self, alpha):
         self.alpha = alpha
-        self.path = None
+        self.paths = None
         self.finished = None
 
-    def render_path(self, im):
+    def render_paths(self, im):
         path_img = im.copy()
         draw = ImageDraw.Draw(path_img)
-        draw.line(self.path, fill=(255, 0, 0))
+        for path in self.paths:
+            draw.line(path, fill=(255, 0, 0))
         return path_img
+        
+    def reset_paths(self):
+        self.paths = []
 
     def score(self, im, x, y, epsilon, lam, n, maxN, Q):
         '''Compute the score of this agent on the provided image.'''
         thetas = np.linspace(0, 2*np.pi, n+1)[:-1]
-        self.path = [(x, y)]
+        path = [(x, y)]
         cost = 0.0
         self.finished = False
         for i in range(maxN):
@@ -77,7 +81,7 @@ class Agent:
                 g_n = - delta_n / 2
             cost += g_n**2
 
-            self.path.append((x_next, y_next))
+            path.append((x_next, y_next))
 
             # Stop if we've reached the goal
             if x_next == im.shape[1] - 1:
@@ -90,6 +94,8 @@ class Agent:
         if not self.finished:
             cost += Q
 
-        cost += lam * len(self.path)
+        cost += lam * len(path)
+        
+        self.paths.append(path)
 
         return cost
