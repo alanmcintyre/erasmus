@@ -6,8 +6,8 @@ import ImageDraw
 def getDDvf(im, x, y, theta, epsilon):
     '''Approximate (w/ epsilon) the directional derivative of f at (x,y)
     along a vector defined by theta.'''
-    x2 = x + epsilon*cos(theta)
-    y2 = y + epsilon*sin(theta)
+    x2 = x + epsilon * cos(theta)
+    y2 = y + epsilon * sin(theta)
 
     x = max(x, 0)
     y = max(y, 0)
@@ -23,7 +23,7 @@ def getDDvf(im, x, y, theta, epsilon):
 
     p1 = im[y, x]
     p2 = im[y2, x2]
-    return (p2-p1)/epsilon
+    return (p2 - p1) / epsilon
 
 
 def getX(im, x, y, thetas, epsilon):
@@ -33,7 +33,7 @@ def getX(im, x, y, thetas, epsilon):
 
 def h_ax(alpha, x):
     '''h_alpha(x) = 2*pi(sigmoid(x)-0.5)'''
-    return 2*pi*(1.0 / (1+exp(np.dot(alpha, x))) - 0.5)
+    return 2 * pi * (1.0 / (1 + exp(np.dot(alpha, x))) - 0.5)
 
 
 class Agent:
@@ -48,13 +48,13 @@ class Agent:
         for path in self.paths:
             draw.line(path, fill=(255, 0, 0))
         return path_img
-        
+
     def reset_paths(self):
         self.paths = []
 
     def score(self, im, x, y, epsilon, lam, n, maxN, Q):
         '''Compute the score of this agent on the provided image.'''
-        thetas = np.linspace(0, 2*np.pi, n+1)[:-1]
+        thetas = np.linspace(0, 2 * np.pi, n+1)[:-1]
         path = [(x, y)]
         cost = 0.0
         self.finished = False
@@ -64,8 +64,8 @@ class Agent:
             phi_hat = h_ax(self.alpha, X)
 
             # Compute next position based on model output
-            x_next = round(x + epsilon*cos(phi_hat))
-            y_next = round(y + epsilon*sin(phi_hat))
+            x_next = round(x + epsilon * cos(phi_hat))
+            y_next = round(y + epsilon * sin(phi_hat))
 
             # Clamp next position to the image boundary
             x_next = np.clip(x_next, 0, im.shape[1] - 1)
@@ -79,7 +79,7 @@ class Agent:
                 g_n = delta_n
             else:
                 g_n = - delta_n / 2
-            cost += g_n**2
+            cost += (g_n ** 2)
 
             path.append((x_next, y_next))
 
@@ -95,7 +95,7 @@ class Agent:
             cost += Q
 
         cost += lam * len(path)
-        
+
         self.paths.append(path)
 
         return cost
